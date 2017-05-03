@@ -81,15 +81,18 @@ class ExNavigationReducer {
   }
 
   static [ActionTypes.REMOVE_NAVIGATOR](state, { navigatorUID }) {
+    navigatorsToRestore = _.without(navigatorsToRestore, navigatorUID)
+    const navigators = _.omit(state.navigators, navigatorUID)
+    const navigator = navigators[navigatorUID]
     const currentNavigatorUID =
       (navigatorsToRestore.length &&
         navigatorsToRestore[navigatorsToRestore.length - 1]) ||
-      state.navigators[navigatorUID].parentNavigatorUID;
+      (navigator ? navigator.parentNavigatorUID : null);
     navigatorsToRestore.pop();
     return {
       ...state,
-      currentNavigatorUID,
-      navigators: _.omit(state.navigators, navigatorUID),
+      currentNavigatorUID: currentNavigatorUID != null ? currentNavigatorUID : state.currentNavigatorUID,
+      navigators: navigators,
     };
   }
 
